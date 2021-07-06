@@ -25,6 +25,7 @@ def BFS(startStateList, goalStateList, maze, size):
         node = frontier.pop(0)
         
         if node == goalStateList:
+            solution = []
             x = goalStateList[0]
             y = goalStateList[1]
             path = []
@@ -77,13 +78,11 @@ def BFS(startStateList, goalStateList, maze, size):
                 pathList.clear()
 
             path.reverse()
-            print("Path: ")
-            print(path)
 
-            print("Cost: ")
-            print(cost)
+            solution.append(path)
+            solution.append(cost)
 
-            return 1
+            return solution
         
         closed.append(node.copy)
 
@@ -223,4 +222,14 @@ if __name__ == "__main__":
     #print(np.matrix(maze))
 
     # Run the selected algorithm
-    print(runMaze(int(algorithm), startStateList, goalStateList, maze, mazeSize))
+    solution = runMaze(int(algorithm), startStateList, goalStateList, maze, mazeSize)
+
+    # Save the found path and cost
+    path = solution[0]
+    cost = solution[1]
+
+    print("Path:")
+    print(path)
+
+    print("Cost:")
+    print(cost)
