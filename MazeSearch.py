@@ -1,5 +1,7 @@
 # A Maze Searching program for CS440
 # Authors: Brian Albert
+
+# Import libraries
 import numpy as np
 
 # Breadth-first search algorithm
