@@ -34,6 +34,7 @@ def BFS(startStateList, goalStateList, maze, size):
             pathList.append(x)
             pathList.append(y)
             path.append(pathList.copy())
+            pathList.clear()
 
             while maze[x][y] != 2:
                 # Check if path goes left
