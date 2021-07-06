@@ -1,5 +1,6 @@
 # A Maze Searching program for CS440
 # Authors: Brian Albert
+import numpy as np
 
 # Breadth-first search algorithm
 def BFS():
@@ -36,16 +37,47 @@ def runMaze(algorithm):
     # Execute the function
     return func()
 
+# Method for creating the given maze
+def createMaze(size, mazeFile):
+    # Initialize array with all zeros
+    maze = [[0 for x in range(size)] for y in range(size)] 
+    i = 0
+
+    # Fill in the maze
+    while i != size:
+        j = 0
+        while j != size:
+            if j == 0 and i != 0:
+                line = prev
+            else:
+                line = mazeFile.readline()
+            lineList = line.split()
+            spot = int(lineList[2])
+            maze[i][j] = spot
+            j += 1
+
+        x = i
+        while i == x:
+            line = mazeFile.readline()
+            lineList = line.split()
+            x = int(lineList[0])
+            prev = line
+
+        i += 1
+
+    return maze
+
+
 # Driver Method
 if __name__ == "__main__":
     # Open problem.txt and save information
     problemFile = open("a1/problem.txt", "r")
 
-    mazeSize = problemFile.readline()
+    mazeSize = int(problemFile.readline())
     startState = problemFile.readline()
     goalState = problemFile.readline()
     algorithm = problemFile.readline()
-    maze = problemFile.readline()
+    mazeNum = problemFile.readline()
 
     startStateList = startState.split()
     startStateX = startStateList[0]
@@ -56,9 +88,13 @@ if __name__ == "__main__":
     goalStateY = goalStateList[1]
 
     # Open maze file
-    maze = maze.rstrip('\n')
-    mazeFileLocation = "a1/mazes/maze_" + maze + ".txt"
+    mazeNum = mazeNum.rstrip('\n')
+    mazeFileLocation = "a1/mazes/maze_" + mazeNum + ".txt"
     mazeFile = open(mazeFileLocation)
+
+    # Create the maze
+    maze = createMaze(mazeSize, mazeFile)
+    print(np.matrix(maze))
 
     # Run the selected algorithm
     print(runMaze(int(algorithm)))
