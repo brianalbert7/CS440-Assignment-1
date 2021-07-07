@@ -6,12 +6,18 @@ import numpy as np
 
 # Breadth-first search algorithm
 def BFS(startStateList, goalStateList, maze, size):
+    # Check if start or goal is a wall
+    if maze[startStateList[0]][startStateList[1]] == 1 or maze[goalStateList[0]][goalStateList[1]]:
+        return -1
+
     # Initialize the frontier and set it equal to the start state
     frontier = []
     frontier.append(startStateList)
 
+    # Represent the start point as 2 on the maze
     maze[startStateList[0]][startStateList[1]] = 2
 
+    # Initialize other variables
     closed = []
     candidates = []
     expandArray = []
@@ -19,11 +25,12 @@ def BFS(startStateList, goalStateList, maze, size):
     i = 0
 
     # Loop until a solution is found or a fail
-    while len(frontier) != 0: 
+    while len(frontier) != 0:
         print(np.matrix(maze)) 
 
         node = frontier.pop(0)
         
+        # When a solution is found
         if node == goalStateList:
             solution = []
             x = goalStateList[0]
@@ -129,6 +136,8 @@ def BFS(startStateList, goalStateList, maze, size):
             if c not in closed and c not in frontier:
                 frontier.append(c.copy())
 
+        candidates.clear()
+
     return -1
  
 # Depth-limited search algorithm
@@ -219,17 +228,19 @@ if __name__ == "__main__":
 
     # Create the maze
     maze = createMaze(mazeSize, mazeFile)
-    #print(np.matrix(maze))
 
     # Run the selected algorithm
     solution = runMaze(int(algorithm), startStateList, goalStateList, maze, mazeSize)
+    
+    if solution == -1:
+        print("No valid solution")
+    else:
+        # Save the found path and cost
+        path = solution[0]
+        cost = solution[1]
 
-    # Save the found path and cost
-    path = solution[0]
-    cost = solution[1]
+        print("Path:")
+        print(path)
 
-    print("Path:")
-    print(path)
-
-    print("Cost:")
-    print(cost)
+        print("Cost:")
+        print(cost)
