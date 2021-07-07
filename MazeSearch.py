@@ -26,8 +26,6 @@ def BFS(startStateList, goalStateList, maze, size):
 
     # Loop until a solution is found or a fail
     while len(frontier) != 0:
-        print(np.matrix(maze)) 
-
         node = frontier.pop(0)
         
         # When a solution is found
@@ -91,7 +89,7 @@ def BFS(startStateList, goalStateList, maze, size):
 
             return solution
         
-        closed.append(node.copy)
+        closed.append(node.copy())
 
         i = maze[node[0]][node[1]] + 1
 
@@ -141,8 +139,190 @@ def BFS(startStateList, goalStateList, maze, size):
     return -1
  
 # Depth-limited search algorithm
-def DLS():
-    return "one"
+def DLS(startStateList, goalStateList, maze, size):
+    # Check if start or goal is a wall
+    if maze[startStateList[0]][startStateList[1]] == 1 or maze[goalStateList[0]][goalStateList[1]]:
+        return -1
+
+    # Initialize the frontier and set it equal to the start state
+    frontier1 = []
+    frontier1.append(startStateList)
+    frontier2 = []
+    frontier2.append(goalStateList)
+
+    # Represent the start point as 2 on the maze
+    maze[startStateList[0]][startStateList[1]] = 2
+    maze[goalStateList[0]][goalStateList[1]] = 2
+
+    # Initialize other variables
+    closed1 = []
+    closed2 = []
+    candidates1 = []
+    candidates2 = []
+    expandArray = []
+    node1 = []
+    node2 = []
+    prevMaze = []
+    i = 0
+    j = 0
+    solutionFound = False
+
+    # Loop until a solution is found or a fail
+    while len(frontier1) != 0 and len(frontier2) != 0:
+        print(np.matrix(maze))
+        node1 = frontier1.pop(0)
+        node2 = frontier2.pop(0)
+        
+        closed1.append(node1.copy())
+        closed2.append(node2.copy())
+
+        i = maze[node1[0]][node1[1]] + 1
+        j = maze[node2[0]][node2[1]] + 1
+
+        # Expand the current node1
+        # Check left
+        if node1[0] != size and node1[1]-1 != size and node1[0] != -1 and node1[1]-1 != -1:
+            expandArray.append(node1[0])
+            expandArray.append(node1[1]-1)
+            if maze[node1[0]][node1[1]-1] == 0:
+                candidates1.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+
+            elif maze[node1[0]][node1[1]-1] > 1 and node1 in closed2:
+                if expandArray in closed2:
+                    solutionFound = True
+
+            expandArray.clear() 
+
+        # Check right
+        if node1[0] != size and node1[1]+1 != size and node1[0] != -1 and node1[1]+1 != -1:
+            expandArray.append(node1[0])
+            expandArray.append(node1[1]+1)
+            if maze[node1[0]][node1[1]+1] == 0:
+                candidates1.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+
+            elif maze[node1[0]][node1[1]+1] > 1:
+                if expandArray in closed2:
+                    solutionFound = True
+
+            expandArray.clear()
+
+        # Check up
+        if node1[0]-1 != size and node1[1] != size and node1[0]-1 != -1 and node1[1] != -1:
+            expandArray.append(node1[0]-1)
+            expandArray.append(node1[1])
+            if maze[node1[0]-1][node1[1]] == 0:
+                candidates1.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                
+            elif maze[node1[0]-1][node1[1]] > 1:
+                if expandArray in closed2:
+                    solutionFound = True
+
+            expandArray.clear()
+
+        # Check down
+        if node1[0]+1 != size and node1[1] != size and node1[0]+1 != -1 and node1[1] != -1:
+            expandArray.append(node1[0]+1)
+            expandArray.append(node1[1])
+            if maze[node1[0]+1][node1[1]] == 0:
+                candidates1.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                
+            elif maze[node1[0]+1][node1[1]] > 1:
+                if expandArray in closed2:
+                    solutionFound = True
+
+            expandArray.clear()
+
+        # Expand the current node2
+        # Check left
+        if node2[0] != size and node2[1]-1 != size and node2[0] != -1 and node2[1]-1 != -1:
+            expandArray.append(node2[0])
+            expandArray.append(node2[1]-1)
+            if maze[node2[0]][node2[1]-1] == 0:
+                candidates2.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = j
+
+            elif maze[node2[0]][node2[1]-1] > 1:
+                if expandArray in closed1:
+                    solutionFound = True
+
+            expandArray.clear() 
+
+        # Check right
+        if node2[0] != size and node2[1]+1 != size and node2[0] != -1 and node2[1]+1 != -1:
+            expandArray.append(node2[0])
+            expandArray.append(node2[1]+1)
+            if maze[node2[0]][node2[1]+1] == 0:
+                candidates2.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = j
+                
+            elif maze[node2[0]][node2[1]+1] > 1:
+                if expandArray in closed1:
+                    solutionFound = True
+
+            expandArray.clear()
+
+        # Check up
+        if node2[0]-1 != size and node2[1] != size and node2[0]-1 != -1 and node2[1] != -1:
+            expandArray.append(node2[0]-1)
+            expandArray.append(node2[1])
+            if maze[node2[0]-1][node2[1]] == 0:
+                candidates2.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = j
+                
+            elif maze[node2[0]-1][node2[1]] > 1:
+                if expandArray in closed1:
+                    solutionFound = True
+
+            expandArray.clear()
+
+        # Check down
+        if node2[0]+1 != size and node2[1] != size and node2[0]+1 != -1 and node2[1] != -1:
+            expandArray.append(node2[0]+1)
+            expandArray.append(node2[1])
+            if maze[node2[0]+1][node2[1]] == 0:
+                candidates2.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = j
+                
+            elif maze[node2[0]+1][node2[1]] > 1:
+                if expandArray in closed1:
+                    solutionFound = True
+
+            expandArray.clear()
+
+        print(np.matrix(maze))
+
+        # When the searches intersect, a solution is given, so return the solution
+        if solutionFound:
+            solution = []
+            x = goalStateList[0]
+            y = goalStateList[1]
+            path = []
+            pathList = []
+            cost = 0
+
+            pathList.append(x)
+            pathList.append(y)
+            path.append(pathList.copy())
+            pathList.clear()
+
+        for c in candidates1:
+            if c not in closed1 and c not in frontier1:
+                frontier1.append(c.copy())
+
+        for c in candidates2:
+            if c not in closed2 and c not in frontier2:
+                frontier2.append(c.copy())
+
+        candidates1.clear()
+        candidates2.clear()
+        prevMaze = [x[:] for x in maze]
+
+    print(np.matrix(maze))
+    return -1
  
 # A* algorithm using h
 def A1():
@@ -228,6 +408,7 @@ if __name__ == "__main__":
 
     # Create the maze
     maze = createMaze(mazeSize, mazeFile)
+    mazeCopy = [x[:] for x in maze]
 
     # Run the selected algorithm
     solution = runMaze(int(algorithm), startStateList, goalStateList, maze, mazeSize)
@@ -244,3 +425,12 @@ if __name__ == "__main__":
 
         print("Cost:")
         print(cost)
+
+        print("Resulting maze and path: ")
+
+        pathCopy = path
+        while len(pathCopy) != 0:
+            mazeCopy[pathCopy[0][0]][pathCopy[0][1]] = 2
+            pathCopy.pop(0)
+
+        print(np.matrix(mazeCopy))
