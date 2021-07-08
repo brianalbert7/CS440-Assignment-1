@@ -1,5 +1,5 @@
 # A Maze Searching program for CS440
-# Authors: Brian Albert
+# Authors: Brian Albert and Mohamed Moussa
 
 # Import libraries
 import numpy as np
