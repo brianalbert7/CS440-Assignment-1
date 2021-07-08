@@ -1114,7 +1114,7 @@ def A3():
 def runMaze(algorithm, ssl, gsl, maze, size):
     switcher = {
         0: BFS,
-        1: DLS,
+        1: BDS,
         2: A1,
         3: A2,
         4: A3
