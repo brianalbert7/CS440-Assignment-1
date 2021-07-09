@@ -10,6 +10,8 @@ class PriorityQueue():
         return len(self.queue) == 0
 
     def pop(self):
+        #Node properties:
+        #[x,y,h,g]: x coordinate, y coordinate, estimated herustic, current total cost
         if len(self.queue) == 1:
             elm = self.queue[0]
             del self.queue[0]
@@ -18,7 +20,9 @@ class PriorityQueue():
         for i in range(len(self.queue)):
             elm = self.queue[i]
             minNode = self.queue[min]
-            if elm[2] < minNode[2]:
+            elmCost = elm[2] + elm[3]
+            minCost = minNode[2] + minNode[3]
+            if elmCost < minCost:
                 min = i
             
         elm = self.queue[min]

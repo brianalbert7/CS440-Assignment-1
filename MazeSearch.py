@@ -14,7 +14,7 @@ def BFS(startStateList, goalStateList, maze, size):
     # Initialize the frontier and set it equal to the start state
     frontier = []
     frontier.append(startStateList)
-
+    
     # Represent the start point as 2 on the maze
     maze[startStateList[0]][startStateList[1]] = 2
 
@@ -28,9 +28,11 @@ def BFS(startStateList, goalStateList, maze, size):
     # Loop until a solution is found or a fail
     while len(frontier) != 0:
         node = frontier.pop(0)
-        
+       
         # When a solution is found
+        i = maze[node[0]][node[1]] + 1
         if node == goalStateList:
+            
             solution = []
             x = goalStateList[0]
             y = goalStateList[1]
@@ -92,8 +94,8 @@ def BFS(startStateList, goalStateList, maze, size):
         
         closed.append(node.copy())
 
-        i = maze[node[0]][node[1]] + 1
-
+        
+    
         # Expand the current node
         # Check left
         if node[0] != size and node[1]-1 != size and node[0] != -1 and node[1]-1 != -1:
@@ -823,10 +825,14 @@ def computeManhattanDistance(p1,p2):
 def h3(p1,p2):
     return min(computeEuclideanDistance(p1,p2),computeManhattanDistance(p1,p2))
 
-def personalHeuristic(p1,p2):
+#
+def h4(p1,p2):
     pass
+
+def personalHeuristic(p1,p2):
+    return max(computeEuclideanDistance(p1,p2),computeManhattanDistance(p1,p2))
     
-# A* algorithm using h
+# A* algorithm using Euclidean Distance
 def A1(startStateList,goalStateList, maze,size):
     #Check if start or goal is a wall
     if maze[startStateList[0]][startStateList[1]] == 1 or maze[goalStateList[0]][goalStateList[1]] == 1:
@@ -834,7 +840,12 @@ def A1(startStateList,goalStateList, maze,size):
 
     #Initialize the frontier and set it equal to the start state
     frontier = PriorityQueue()
-    frontier.queue.append(startStateList)
+    startCoordinate = []
+    startCoordinate.append(startStateList[0])
+    startCoordinate.append(startStateList[1])
+    startCoordinate.append(computeEuclideanDistance(startStateList,goalStateList))
+    startCoordinate.append(0)
+    frontier.insert(startCoordinate)
 
     #Represent the start point as 2 on the maze
     maze[startStateList[0]][startStateList[1]] = 2
@@ -846,16 +857,20 @@ def A1(startStateList,goalStateList, maze,size):
     expandArray = []
     node = []
     i = 0
+    
 
         #Loop until a solution is found or a fail
     while len(frontier.queue) != 0:
         node = frontier.pop()
+
         coordinate = []
         coordinate.append(node[0])
         coordinate.append(node[1])
+        i = maze[node[0]][node[1]] + 1
         #When a solution is found
         if coordinate == goalStateList:
-            print("match")
+            
+         
             solution = []
             x = goalStateList[0]
             y = goalStateList[1]
@@ -867,8 +882,9 @@ def A1(startStateList,goalStateList, maze,size):
             pathList.append(y)
             path.append(pathList.copy())
             pathList.clear()
-
-            while maze[x][y] != 2:
+            while maze[x][y] != 2: 
+                #print("[" + str(x) + "," + str(y) + "]")
+                #print(i)
                 # Check if path goes left
                 if x != size and y-1 != size and x != -1 and y-1 != -1:
                     if maze[x][y-1] == i-1:
@@ -915,49 +931,53 @@ def A1(startStateList,goalStateList, maze,size):
 
             return solution
         closed.append(node.copy())
-
-        i = maze[node[0]][node[1]] + 1
-
+        
         #Expand the current node
-        #Check down
+        #Check left
         if node[0] != size and node[1]-1 != size and node[0] != -1 and node[1]-1 != -1:
             if maze[node[0]][node[1]-1] == 0:
                 expandArray.append(node[0])
                 expandArray.append(node[1] -1)
-                expandArray.append(h3([node[0],node[1] -1],goalStateList))
-                maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
-
-        # Check up
-        if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
-            if maze[node[0]][node[1]+1] == 0:
-                expandArray.append(node[0])
-                expandArray.append(node[1]+1)
-                expandArray.append(h3([node[0],node[1] +1],goalStateList))
-                candidates.append(expandArray.copy())
-                maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
-
-        # Check left
-        if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
-            if maze[node[0]-1][node[1]] == 0:
-                expandArray.append(node[0]-1)
-                expandArray.append(node[1])
-                expandArray.append(h3([node[0] -1,node[1]],goalStateList))
+                expandArray.append(computeEuclideanDistance([node[0],node[1] -1],goalStateList))
+                expandArray.append(1 + node[3])
                 candidates.append(expandArray.copy())
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray.clear()
 
         # Check right
-        if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
-            if maze[node[0]+1][node[1]] == 0:
-                expandArray.append(node[0]+1)
-                expandArray.append(node[1])
-                expandArray.append(h3([node[0] +1,node[1]],goalStateList))
+        if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
+            if maze[node[0]][node[1]+1] == 0:
+                expandArray.append(node[0])
+                expandArray.append(node[1]+1)
+                expandArray.append(computeEuclideanDistance([node[0],node[1] +1],goalStateList))
+                expandArray.append(1 + node[3])
                 candidates.append(expandArray.copy())
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray.clear()
 
+        # Check up
+        if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
+            if maze[node[0]-1][node[1]] == 0:
+                expandArray.append(node[0]-1)
+                expandArray.append(node[1])
+                expandArray.append(computeEuclideanDistance([node[0] -1,node[1]],goalStateList))
+                expandArray.append(2 + node[3])
+                candidates.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                expandArray.clear()
+
+        # Check down
+        if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
+            if maze[node[0]+1][node[1]] == 0:
+                expandArray.append(node[0]+1)
+                expandArray.append(node[1])
+                expandArray.append(computeEuclideanDistance([node[0] +1,node[1]],goalStateList))
+                expandArray.append(2 + node[3])
+                candidates.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                expandArray.clear()
+
+        
         for c in candidates:
             if c not in closed and c not in frontier.queue:
                 frontier.insert(c.copy())
@@ -966,7 +986,7 @@ def A1(startStateList,goalStateList, maze,size):
     print("no solution found")
     return -1
 
-# A* algorithm using h
+# A* algorithm using h4
 def A2(startStateList,goalStateList,maze,size):
     #Check if start or goal is a wall
     if maze[startStateList[0]][startStateList[1]] == 1 or maze[goalStateList[0]][goalStateList[1]] == 1:
@@ -974,7 +994,12 @@ def A2(startStateList,goalStateList,maze,size):
 
     #Initialize the frontier and set it equal to the start state
     frontier = PriorityQueue()
-    frontier.queue.append(startStateList)
+    startCoordinate = []
+    startCoordinate.append(startStateList[0])
+    startCoordinate.append(startStateList[1])
+    startCoordinate.append(h3(startStateList,goalStateList))
+    startCoordinate.append(0)
+    frontier.insert(startCoordinate)
 
     #Represent the start point as 2 on the maze
     maze[startStateList[0]][startStateList[1]] = 2
@@ -986,17 +1011,16 @@ def A2(startStateList,goalStateList,maze,size):
     expandArray = []
     node = []
     i = 0
-
+   
         #Loop until a solution is found or a fail
     while len(frontier.queue) != 0:
         node = frontier.pop()
-        print(node)
         coordinate = []
         coordinate.append(node[0])
         coordinate.append(node[1])
+        i = maze[node[0]][node[1]] + 1
         #When a solution is found
         if coordinate == goalStateList:
-            print("match")
             solution = []
             x = goalStateList[0]
             y = goalStateList[1]
@@ -1057,48 +1081,53 @@ def A2(startStateList,goalStateList,maze,size):
             return solution
         closed.append(node.copy())
 
-        i = maze[node[0]][node[1]] + 1
+       
 
         #Expand the current node
-        #Check down
+        #Check left
         if node[0] != size and node[1]-1 != size and node[0] != -1 and node[1]-1 != -1:
             if maze[node[0]][node[1]-1] == 0:
                 expandArray.append(node[0])
                 expandArray.append(node[1] -1)
-                expandArray.append(computeEuclideanDistance([node[0],node[1] -1],goalStateList))
-                maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
-
-        # Check up
-        if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
-            if maze[node[0]][node[1]+1] == 0:
-                expandArray.append(node[0])
-                expandArray.append(node[1]+1)
-                expandArray.append(computeEuclideanDistance([node[0],node[1] +1],goalStateList))
-                candidates.append(expandArray.copy())
-                maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
-
-        # Check left
-        if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
-            if maze[node[0]-1][node[1]] == 0:
-                expandArray.append(node[0]-1)
-                expandArray.append(node[1])
-                expandArray.append(computeEuclideanDistance([node[0] -1,node[1]],goalStateList))
+                expandArray.append(h3([node[0],node[1] -1],goalStateList))
+                expandArray.append(1 + node[3])
                 candidates.append(expandArray.copy())
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray.clear()
 
         # Check right
-        if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
-            if maze[node[0]+1][node[1]] == 0:
-                expandArray.append(node[0]+1)
-                expandArray.append(node[1])
-                expandArray.append(computeEuclideanDistance([node[0] +1,node[1]],goalStateList))
+        if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
+            if maze[node[0]][node[1]+1] == 0:
+                expandArray.append(node[0])
+                expandArray.append(node[1]+1)
+                expandArray.append(h3([node[0],node[1] +1],goalStateList))
+                expandArray.append(1 + node[3])
                 candidates.append(expandArray.copy())
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray.clear()
 
+        # Check up
+        if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
+            if maze[node[0]-1][node[1]] == 0:
+                expandArray.append(node[0]-1)
+                expandArray.append(node[1])
+                expandArray.append(h3([node[0] -1,node[1]],goalStateList))
+                expandArray.append(2 + node[3])
+                candidates.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                expandArray.clear()
+
+        # Check down
+        if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
+            if maze[node[0]+1][node[1]] == 0:
+                expandArray.append(node[0]+1)
+                expandArray.append(node[1])
+                expandArray.append(h3([node[0] +1,node[1]],goalStateList))
+                expandArray.append(2 + node[3])
+                candidates.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                expandArray.clear()
+       
         for c in candidates:
             if c not in closed and c not in frontier.queue:
                 frontier.insert(c.copy())
@@ -1108,8 +1137,155 @@ def A2(startStateList,goalStateList,maze,size):
     return -1
 
 # A* algorithm using h
-def A3():
-    return "four"
+def A3(startStateList,goalStateList,maze,size):
+     #Check if start or goal is a wall
+    if maze[startStateList[0]][startStateList[1]] == 1 or maze[goalStateList[0]][goalStateList[1]] == 1:
+        return -1
+
+    #Initialize the frontier and set it equal to the start state
+    frontier = PriorityQueue()
+    startCoordinate = []
+    startCoordinate.append(startStateList[0])
+    startCoordinate.append(startStateList[1])
+    startCoordinate.append(h3(startStateList,goalStateList))
+    startCoordinate.append(0)
+    frontier.insert(startCoordinate)
+
+    #Represent the start point as 2 on the maze
+    maze[startStateList[0]][startStateList[1]] = 2
+
+
+    # Initialize other variables
+    closed = []
+    candidates = []
+    expandArray = []
+    node = []
+    i = 0
+   
+        #Loop until a solution is found or a fail
+    while len(frontier.queue) != 0:
+        node = frontier.pop()
+        coordinate = []
+        coordinate.append(node[0])
+        coordinate.append(node[1])
+        i = maze[node[0]][node[1]] + 1
+        #When a solution is found
+        if coordinate == goalStateList:
+            solution = []
+            x = goalStateList[0]
+            y = goalStateList[1]
+            path = []
+            pathList = []
+            cost = 0
+
+            pathList.append(x)
+            pathList.append(y)
+            path.append(pathList.copy())
+            pathList.clear()
+
+            while maze[x][y] != 2:
+                # Check if path goes left
+                if x != size and y-1 != size and x != -1 and y-1 != -1:
+                    if maze[x][y-1] == i-1:
+                        pathList.append(x)
+                        pathList.append(y-1)
+                        path.append(pathList.copy())
+                        cost += 1
+                        y -= 1
+
+                # Check if path goes right
+                if x != size and y+1 != size and x != -1 and y+1 != -1:
+                    if maze[x][y+1] == i-1:
+                        pathList.append(x)
+                        pathList.append(y+1)
+                        path.append(pathList.copy())
+                        cost += 1
+                        y += 1
+
+                # Check if path goes up
+                if x-1 != size and y != size and x-1 != -1 and y != -1:
+                    if maze[x-1][y] == i-1:
+                        pathList.append(x-1)
+                        pathList.append(y)
+                        path.append(pathList.copy())
+                        cost += 2
+                        x -= 1
+
+                # Check if path goes down
+                if x+1 != size and y != size and x+1 != -1 and y != -1:
+                    if maze[x+1][y] == i-1:
+                        pathList.append(x+1)
+                        pathList.append(y)
+                        path.append(pathList.copy())
+                        cost += 2
+                        x += 1
+
+                i -= 1
+                pathList.clear()
+
+            path.reverse()
+
+            solution.append(path)
+            solution.append(cost)
+
+            return solution
+        closed.append(node.copy())
+
+       
+
+        #Expand the current node
+        #Check left
+        if node[0] != size and node[1]-1 != size and node[0] != -1 and node[1]-1 != -1:
+            if maze[node[0]][node[1]-1] == 0:
+                expandArray.append(node[0])
+                expandArray.append(node[1] -1)
+                expandArray.append(personalHeuristic([node[0],node[1] -1],goalStateList))
+                expandArray.append(1 + node[3])
+                candidates.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                expandArray.clear()
+
+        # Check right
+        if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
+            if maze[node[0]][node[1]+1] == 0:
+                expandArray.append(node[0])
+                expandArray.append(node[1]+1)
+                expandArray.append(personalHeuristic([node[0],node[1] +1],goalStateList))
+                expandArray.append(1 + node[3])
+                candidates.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                expandArray.clear()
+
+        # Check up
+        if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
+            if maze[node[0]-1][node[1]] == 0:
+                expandArray.append(node[0]-1)
+                expandArray.append(node[1])
+                expandArray.append(personalHeuristic([node[0] -1,node[1]],goalStateList))
+                expandArray.append(2 + node[3])
+                candidates.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                expandArray.clear()
+
+        # Check down
+        if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
+            if maze[node[0]+1][node[1]] == 0:
+                expandArray.append(node[0]+1)
+                expandArray.append(node[1])
+                expandArray.append(personalHeuristic([node[0] +1,node[1]],goalStateList))
+                expandArray.append(2 + node[3])
+                candidates.append(expandArray.copy())
+                maze[expandArray[0]][expandArray[1]] = i
+                expandArray.clear()
+       
+        for c in candidates:
+            if c not in closed and c not in frontier.queue:
+                frontier.insert(c.copy())
+
+        candidates.clear()
+    print("no solution found")
+    return -1
+
  
 # Method to run the correct algorithm
 def runMaze(algorithm, ssl, gsl, maze, size):
