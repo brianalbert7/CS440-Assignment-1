@@ -10,14 +10,15 @@ class PriorityQueue():
         return len(self.queue) == 0
 
     def pop(self):
-        if len(self.queue) ==1:
+        if len(self.queue) == 1:
             elm = self.queue[0]
             del self.queue[0]
             return elm
         min = 0
         for i in range(len(self.queue)):
             elm = self.queue[i]
-            if elm[2] < elm[min]:
+            minNode = self.queue[min]
+            if elm[2] < minNode[2]:
                 min = i
             
         elm = self.queue[min]

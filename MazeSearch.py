@@ -511,6 +511,7 @@ def A2(startStateList,goalStateList,maze,size):
         #Loop until a solution is found or a fail
     while len(frontier.queue) != 0:
         node = frontier.pop()
+        print(node)
         coordinate = []
         coordinate.append(node[0])
         coordinate.append(node[1])
