@@ -155,135 +155,140 @@ def IDDFS(startStateList, goalStateList, maze, size):
         print("Starts or ends on a 1")
         return -1
 
+    mazeCopy = [x[:] for x in maze]
     # Initialize the frontier and set it equal to the start state
-    frontier = []
-    frontier.append(startStateList)
-    
-    # Represent the start point as 2 on the maze
-    maze[startStateList[0]][startStateList[1]] = 2
+    for depth in range(1000):
+        maze = [x[:] for x in mazeCopy]
+        frontier = []
+        frontier.append(startStateList)
+        
+        # Represent the start point as 2 on the maze
+        maze[startStateList[0]][startStateList[1]] = 2
 
-    # Initialize other variables
-    closed = []
-    candidates = []
-    expandArray = []
-    node = []
-    i = 0
+        # Initialize other variables
+        closed = []
+        candidates = []
+        expandArray = []
+        node = []
+        i = 0
+        j = 0
 
-    # Loop until a solution is found or a fail
-    while len(frontier) != 0:
-        node = frontier.pop()
-       
-        # When a solution is found
-        i = maze[node[0]][node[1]] + 1
-        if node == goalStateList:
-            
-            solution = []
-            x = goalStateList[0]
-            y = goalStateList[1]
-            path = []
-            pathList = []
-            cost = 0
+        # Loop until a solution is found or a fail
+        while len(frontier) != 0 and depth != j:
+            j += 1
+            node = frontier.pop()
+        
+            # When a solution is found
+            i = maze[node[0]][node[1]] + 1
+            if node == goalStateList:
+                
+                solution = []
+                x = goalStateList[0]
+                y = goalStateList[1]
+                path = []
+                pathList = []
+                cost = 0
 
-            pathList.append(x)
-            pathList.append(y)
-            path.append(pathList.copy())
-            pathList.clear()
-
-            while maze[x][y] != 2:
-                # Check if path goes left
-                if x != size and y-1 != size and x != -1 and y-1 != -1:
-                    if maze[x][y-1] == i-1:
-                        pathList.append(x)
-                        pathList.append(y-1)
-                        path.append(pathList.copy())
-                        cost += 1
-                        y -= 1
-
-                # Check if path goes right
-                if x != size and y+1 != size and x != -1 and y+1 != -1:
-                    if maze[x][y+1] == i-1:
-                        pathList.append(x)
-                        pathList.append(y+1)
-                        path.append(pathList.copy())
-                        cost += 1
-                        y += 1
-
-                # Check if path goes up
-                if x-1 != size and y != size and x-1 != -1 and y != -1:
-                    if maze[x-1][y] == i-1:
-                        pathList.append(x-1)
-                        pathList.append(y)
-                        path.append(pathList.copy())
-                        cost += 2
-                        x -= 1
-
-                # Check if path goes down
-                if x+1 != size and y != size and x+1 != -1 and y != -1:
-                    if maze[x+1][y] == i-1:
-                        pathList.append(x+1)
-                        pathList.append(y)
-                        path.append(pathList.copy())
-                        cost += 2
-                        x += 1
-
-                i -= 1
+                pathList.append(x)
+                pathList.append(y)
+                path.append(pathList.copy())
                 pathList.clear()
 
-            path.reverse()
+                while maze[x][y] != 2:
+                    # Check if path goes left
+                    if x != size and y-1 != size and x != -1 and y-1 != -1:
+                        if maze[x][y-1] == i-1:
+                            pathList.append(x)
+                            pathList.append(y-1)
+                            path.append(pathList.copy())
+                            cost += 1
+                            y -= 1
 
-            solution.append(path)
-            solution.append(cost)
-            solution.append(closed)
+                    # Check if path goes right
+                    if x != size and y+1 != size and x != -1 and y+1 != -1:
+                        if maze[x][y+1] == i-1:
+                            pathList.append(x)
+                            pathList.append(y+1)
+                            path.append(pathList.copy())
+                            cost += 1
+                            y += 1
+
+                    # Check if path goes up
+                    if x-1 != size and y != size and x-1 != -1 and y != -1:
+                        if maze[x-1][y] == i-1:
+                            pathList.append(x-1)
+                            pathList.append(y)
+                            path.append(pathList.copy())
+                            cost += 2
+                            x -= 1
+
+                    # Check if path goes down
+                    if x+1 != size and y != size and x+1 != -1 and y != -1:
+                        if maze[x+1][y] == i-1:
+                            pathList.append(x+1)
+                            pathList.append(y)
+                            path.append(pathList.copy())
+                            cost += 2
+                            x += 1
+
+                    i -= 1
+                    pathList.clear()
+
+                path.reverse()
+
+                solution.append(path)
+                solution.append(cost)
+                solution.append(closed)
 
 
-            return solution
+                return solution
+            
+            closed.append(node.copy())
+
+            
         
-        closed.append(node.copy())
+            # Expand the current node
+            # Check left
+            if node[0] != size and node[1]-1 != size and node[0] != -1 and node[1]-1 != -1:
+                if maze[node[0]][node[1]-1] == 0:
+                    expandArray.append(node[0])
+                    expandArray.append(node[1]-1)
+                    candidates.append(expandArray.copy())
+                    maze[expandArray[0]][expandArray[1]] = i
+                    expandArray.clear() 
 
-        
-    
-        # Expand the current node
-        # Check left
-        if node[0] != size and node[1]-1 != size and node[0] != -1 and node[1]-1 != -1:
-            if maze[node[0]][node[1]-1] == 0:
-                expandArray.append(node[0])
-                expandArray.append(node[1]-1)
-                candidates.append(expandArray.copy())
-                maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear() 
+            # Check right
+            if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
+                if maze[node[0]][node[1]+1] == 0:
+                    expandArray.append(node[0])
+                    expandArray.append(node[1]+1)
+                    candidates.append(expandArray.copy())
+                    maze[expandArray[0]][expandArray[1]] = i
+                    expandArray.clear()
 
-        # Check right
-        if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
-            if maze[node[0]][node[1]+1] == 0:
-                expandArray.append(node[0])
-                expandArray.append(node[1]+1)
-                candidates.append(expandArray.copy())
-                maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+            # Check up
+            if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
+                if maze[node[0]-1][node[1]] == 0:
+                    expandArray.append(node[0]-1)
+                    expandArray.append(node[1])
+                    candidates.append(expandArray.copy())
+                    maze[expandArray[0]][expandArray[1]] = i
+                    expandArray.clear()
 
-        # Check up
-        if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
-            if maze[node[0]-1][node[1]] == 0:
-                expandArray.append(node[0]-1)
-                expandArray.append(node[1])
-                candidates.append(expandArray.copy())
-                maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+            # Check down
+            if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
+                if maze[node[0]+1][node[1]] == 0:
+                    expandArray.append(node[0]+1)
+                    expandArray.append(node[1])
+                    candidates.append(expandArray.copy())
+                    maze[expandArray[0]][expandArray[1]] = i
+                    expandArray.clear()
 
-        # Check down
-        if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
-            if maze[node[0]+1][node[1]] == 0:
-                expandArray.append(node[0]+1)
-                expandArray.append(node[1])
-                candidates.append(expandArray.copy())
-                maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+            for c in candidates:
+                if c not in closed and c not in frontier:
+                    frontier.append(c.copy())
 
-        for c in candidates:
-            if c not in closed and c not in frontier:
-                frontier.append(c.copy())
-
-        candidates.clear()
+            candidates.clear()
 
     return -1
  
