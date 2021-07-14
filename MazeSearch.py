@@ -47,7 +47,7 @@ def BFS(startStateList, goalStateList, maze, size):
 
             pathList.append(x)
             pathList.append(y)
-            path.append(pathList.copy())
+            path = copy.copy(pathList)
             pathList.clear()
 
             while maze[x][y] != 2:
@@ -56,7 +56,7 @@ def BFS(startStateList, goalStateList, maze, size):
                     if maze[x][y-1] == i-1:
                         pathList.append(x)
                         pathList.append(y-1)
-                        path.append(pathList.copy())
+                        path = copy.copy(pathList)
                         cost += 1
                         y -= 1
 
@@ -65,7 +65,7 @@ def BFS(startStateList, goalStateList, maze, size):
                     if maze[x][y+1] == i-1:
                         pathList.append(x)
                         pathList.append(y+1)
-                        path.append(pathList.copy())
+                        path = copy.copy(pathList)
                         cost += 1
                         y += 1
 
@@ -74,7 +74,7 @@ def BFS(startStateList, goalStateList, maze, size):
                     if maze[x-1][y] == i-1:
                         pathList.append(x-1)
                         pathList.append(y)
-                        path.append(pathList.copy())
+                        path = copy.copy(pathList)
                         cost += 2
                         x -= 1
 
@@ -83,7 +83,7 @@ def BFS(startStateList, goalStateList, maze, size):
                     if maze[x+1][y] == i-1:
                         pathList.append(x+1)
                         pathList.append(y)
-                        path.append(pathList.copy())
+                        path = copy.copy(pathList)
                         cost += 2
                         x += 1
 
@@ -99,8 +99,7 @@ def BFS(startStateList, goalStateList, maze, size):
 
             return solution
         
-        closed.append(node.copy())
-
+        closed = copy.copy(node)
         
     
         # Expand the current node
@@ -109,7 +108,7 @@ def BFS(startStateList, goalStateList, maze, size):
             if maze[node[0]][node[1]-1] == 0:
                 expandArray.append(node[0])
                 expandArray.append(node[1]-1)
-                candidates.append(expandArray.copy())
+                candidates = copy.copy(expandArray)
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray.clear() 
 
@@ -118,7 +117,7 @@ def BFS(startStateList, goalStateList, maze, size):
             if maze[node[0]][node[1]+1] == 0:
                 expandArray.append(node[0])
                 expandArray.append(node[1]+1)
-                candidates.append(expandArray.copy())
+                candidates = copy.copy(expandArray)
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray.clear()
 
@@ -127,7 +126,7 @@ def BFS(startStateList, goalStateList, maze, size):
             if maze[node[0]-1][node[1]] == 0:
                 expandArray.append(node[0]-1)
                 expandArray.append(node[1])
-                candidates.append(expandArray.copy())
+                candidates = copy.copy(expandArray)
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray.clear()
 
@@ -136,13 +135,13 @@ def BFS(startStateList, goalStateList, maze, size):
             if maze[node[0]+1][node[1]] == 0:
                 expandArray.append(node[0]+1)
                 expandArray.append(node[1])
-                candidates.append(expandArray.copy())
+                candidates = copy.copy(expandArray)
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray.clear()
 
         for c in candidates:
             if c not in closed and c not in frontier:
-                frontier.append(c.copy())
+                fronteir = copy.copy(c)
 
         candidates.clear()
 
@@ -847,7 +846,7 @@ if __name__ == "__main__":
 
     # Create the maze
     maze = createMaze(mazeSize, mazeFile)
-    mazeCopy = [x[:] for x in maze]
+    mazeCopy = copy.copy(maze)
 
 
     # Run the selected algorithm
