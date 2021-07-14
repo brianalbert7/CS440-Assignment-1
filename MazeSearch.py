@@ -3,6 +3,7 @@
 
 # Import libraries
 import numpy as np
+import copy
 from PriorityQueue import PriorityQueue
 import math
 import matplotlib.pyplot as plt
@@ -48,7 +49,7 @@ def BFS(startStateList, goalStateList, maze, size):
             pathList.append(x)
             pathList.append(y)
             path = copy.copy(pathList)
-            pathList.clear()
+            pathList = []
 
             while maze[x][y] != 2:
                 # Check if path goes left
@@ -88,7 +89,7 @@ def BFS(startStateList, goalStateList, maze, size):
                         x += 1
 
                 i -= 1
-                pathList.clear()
+                pathList = []
 
             path.reverse()
 
@@ -110,7 +111,7 @@ def BFS(startStateList, goalStateList, maze, size):
                 expandArray.append(node[1]-1)
                 candidates = copy.copy(expandArray)
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear() 
+                expandArray = []
 
         # Check right
         if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
@@ -119,7 +120,7 @@ def BFS(startStateList, goalStateList, maze, size):
                 expandArray.append(node[1]+1)
                 candidates = copy.copy(expandArray)
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check up
         if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
@@ -128,7 +129,7 @@ def BFS(startStateList, goalStateList, maze, size):
                 expandArray.append(node[1])
                 candidates = copy.copy(expandArray)
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check down
         if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
@@ -137,13 +138,13 @@ def BFS(startStateList, goalStateList, maze, size):
                 expandArray.append(node[1])
                 candidates = copy.copy(expandArray)
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         for c in candidates:
             if c not in closed and c not in frontier:
                 fronteir = copy.copy(c)
 
-        candidates.clear()
+        candidates = []
 
     return -1
  
