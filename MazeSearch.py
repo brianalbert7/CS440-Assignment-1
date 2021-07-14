@@ -6,9 +6,6 @@ import numpy as np
 import copy
 from PriorityQueue import PriorityQueue
 import math
-import matplotlib.pyplot as plt
-from datetime import datetime
-start=datetime.now()
 
 # Breadth-first search algorithm
 def BFS(startStateList, goalStateList, maze, size):
@@ -48,7 +45,7 @@ def BFS(startStateList, goalStateList, maze, size):
 
             pathList.append(x)
             pathList.append(y)
-            path = copy.copy(pathList)
+            path.append(copy.deepcopy(pathList))
             pathList = []
 
             while maze[x][y] != 2:
@@ -57,7 +54,7 @@ def BFS(startStateList, goalStateList, maze, size):
                     if maze[x][y-1] == i-1:
                         pathList.append(x)
                         pathList.append(y-1)
-                        path = copy.copy(pathList)
+                        path.append(copy.deepcopy(pathList))
                         cost += 1
                         y -= 1
 
@@ -66,7 +63,7 @@ def BFS(startStateList, goalStateList, maze, size):
                     if maze[x][y+1] == i-1:
                         pathList.append(x)
                         pathList.append(y+1)
-                        path = copy.copy(pathList)
+                        path.append(copy.deepcopy(pathList))
                         cost += 1
                         y += 1
 
@@ -75,7 +72,7 @@ def BFS(startStateList, goalStateList, maze, size):
                     if maze[x-1][y] == i-1:
                         pathList.append(x-1)
                         pathList.append(y)
-                        path = copy.copy(pathList)
+                        path.append(copy.deepcopy(pathList))
                         cost += 2
                         x -= 1
 
@@ -84,7 +81,7 @@ def BFS(startStateList, goalStateList, maze, size):
                     if maze[x+1][y] == i-1:
                         pathList.append(x+1)
                         pathList.append(y)
-                        path = copy.copy(pathList)
+                        path.append(copy.deepcopy(pathList))
                         cost += 2
                         x += 1
 
@@ -100,7 +97,8 @@ def BFS(startStateList, goalStateList, maze, size):
 
             return solution
         
-        closed = copy.copy(node)
+        closed.append(copy.deepcopy(node))
+
         
     
         # Expand the current node
@@ -109,7 +107,7 @@ def BFS(startStateList, goalStateList, maze, size):
             if maze[node[0]][node[1]-1] == 0:
                 expandArray.append(node[0])
                 expandArray.append(node[1]-1)
-                candidates = copy.copy(expandArray)
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray = []
 
@@ -118,7 +116,7 @@ def BFS(startStateList, goalStateList, maze, size):
             if maze[node[0]][node[1]+1] == 0:
                 expandArray.append(node[0])
                 expandArray.append(node[1]+1)
-                candidates = copy.copy(expandArray)
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray = []
 
@@ -127,7 +125,7 @@ def BFS(startStateList, goalStateList, maze, size):
             if maze[node[0]-1][node[1]] == 0:
                 expandArray.append(node[0]-1)
                 expandArray.append(node[1])
-                candidates = copy.copy(expandArray)
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray = []
 
@@ -136,13 +134,13 @@ def BFS(startStateList, goalStateList, maze, size):
             if maze[node[0]+1][node[1]] == 0:
                 expandArray.append(node[0]+1)
                 expandArray.append(node[1])
-                candidates = copy.copy(expandArray)
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
                 expandArray = []
 
         for c in candidates:
             if c not in closed and c not in frontier:
-                fronteir = copy.copy(c)
+                frontier.append(copy.deepcopy(c))
 
         candidates = []
 
@@ -155,10 +153,10 @@ def IDDFS(startStateList, goalStateList, maze, size):
         print("Starts or ends on a 1")
         return -1
 
-    mazeCopy = [x[:] for x in maze]
+    mazeCopy = copy.deepcopy(maze)
     # Initialize the frontier and set it equal to the start state
-    for depth in range(1000):
-        maze = [x[:] for x in mazeCopy]
+    for depth in range(10000):
+        maze = copy.deepcopy(mazeCopy)
         frontier = []
         frontier.append(startStateList)
         
@@ -191,8 +189,8 @@ def IDDFS(startStateList, goalStateList, maze, size):
 
                 pathList.append(x)
                 pathList.append(y)
-                path.append(pathList.copy())
-                pathList.clear()
+                path.append(copy.deepcopy(pathList))
+                pathList = []
 
                 while maze[x][y] != 2:
                     # Check if path goes left
@@ -200,7 +198,7 @@ def IDDFS(startStateList, goalStateList, maze, size):
                         if maze[x][y-1] == i-1:
                             pathList.append(x)
                             pathList.append(y-1)
-                            path.append(pathList.copy())
+                            path.append(copy.deepcopy(pathList))
                             cost += 1
                             y -= 1
 
@@ -209,7 +207,7 @@ def IDDFS(startStateList, goalStateList, maze, size):
                         if maze[x][y+1] == i-1:
                             pathList.append(x)
                             pathList.append(y+1)
-                            path.append(pathList.copy())
+                            path.append(copy.deepcopy(pathList))
                             cost += 1
                             y += 1
 
@@ -218,7 +216,7 @@ def IDDFS(startStateList, goalStateList, maze, size):
                         if maze[x-1][y] == i-1:
                             pathList.append(x-1)
                             pathList.append(y)
-                            path.append(pathList.copy())
+                            path.append(copy.deepcopy(pathList))
                             cost += 2
                             x -= 1
 
@@ -227,12 +225,12 @@ def IDDFS(startStateList, goalStateList, maze, size):
                         if maze[x+1][y] == i-1:
                             pathList.append(x+1)
                             pathList.append(y)
-                            path.append(pathList.copy())
+                            path.append(copy.deepcopy(pathList))
                             cost += 2
                             x += 1
 
                     i -= 1
-                    pathList.clear()
+                    pathList = []
 
                 path.reverse()
 
@@ -243,9 +241,7 @@ def IDDFS(startStateList, goalStateList, maze, size):
 
                 return solution
             
-            closed.append(node.copy())
-
-            
+            closed.append(copy.deepcopy(node))
         
             # Expand the current node
             # Check left
@@ -253,42 +249,42 @@ def IDDFS(startStateList, goalStateList, maze, size):
                 if maze[node[0]][node[1]-1] == 0:
                     expandArray.append(node[0])
                     expandArray.append(node[1]-1)
-                    candidates.append(expandArray.copy())
+                    candidates.append(copy.deepcopy(expandArray))
                     maze[expandArray[0]][expandArray[1]] = i
-                    expandArray.clear() 
+                    expandArray = [] 
 
             # Check right
             if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
                 if maze[node[0]][node[1]+1] == 0:
                     expandArray.append(node[0])
                     expandArray.append(node[1]+1)
-                    candidates.append(expandArray.copy())
+                    candidates.append(copy.deepcopy(expandArray))
                     maze[expandArray[0]][expandArray[1]] = i
-                    expandArray.clear()
+                    expandArray = []
 
             # Check up
             if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
                 if maze[node[0]-1][node[1]] == 0:
                     expandArray.append(node[0]-1)
                     expandArray.append(node[1])
-                    candidates.append(expandArray.copy())
+                    candidates.append(copy.deepcopy(expandArray))
                     maze[expandArray[0]][expandArray[1]] = i
-                    expandArray.clear()
+                    expandArray = []
 
             # Check down
             if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
                 if maze[node[0]+1][node[1]] == 0:
                     expandArray.append(node[0]+1)
                     expandArray.append(node[1])
-                    candidates.append(expandArray.copy())
+                    candidates.append(copy.deepcopy(expandArray))
                     maze[expandArray[0]][expandArray[1]] = i
-                    expandArray.clear()
+                    expandArray = []
 
             for c in candidates:
                 if c not in closed and c not in frontier:
-                    frontier.append(c.copy())
+                    frontier.append(copy.deepcopy(c))
 
-            candidates.clear()
+            candidates = []
 
     return -1
  
@@ -366,8 +362,8 @@ def A1(startStateList,goalStateList, maze,size):
 
             pathList.append(x)
             pathList.append(y)
-            path.append(pathList.copy())
-            pathList.clear()
+            path.append(copy.deepcopy(pathList))
+            pathList = []
             while maze[x][y] != 2: 
                 #print("[" + str(x) + "," + str(y) + "]")
                 #print(i)
@@ -376,7 +372,7 @@ def A1(startStateList,goalStateList, maze,size):
                     if maze[x][y-1] == i-1:
                         pathList.append(x)
                         pathList.append(y-1)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 1
                         y -= 1
 
@@ -385,7 +381,7 @@ def A1(startStateList,goalStateList, maze,size):
                     if maze[x][y+1] == i-1:
                         pathList.append(x)
                         pathList.append(y+1)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 1
                         y += 1
 
@@ -394,7 +390,7 @@ def A1(startStateList,goalStateList, maze,size):
                     if maze[x-1][y] == i-1:
                         pathList.append(x-1)
                         pathList.append(y)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 2
                         x -= 1
 
@@ -403,12 +399,12 @@ def A1(startStateList,goalStateList, maze,size):
                     if maze[x+1][y] == i-1:
                         pathList.append(x+1)
                         pathList.append(y)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 2
                         x += 1
 
                 i -= 1
-                pathList.clear()
+                pathList = []
 
             path.reverse()
 
@@ -417,7 +413,7 @@ def A1(startStateList,goalStateList, maze,size):
             solution.append(closed)
 
             return solution
-        closed.append(node.copy())
+        closed.append(copy.deepcopy(node))
         
         #Expand the current node
         #Check left
@@ -427,9 +423,9 @@ def A1(startStateList,goalStateList, maze,size):
                 expandArray.append(node[1] -1)
                 expandArray.append(computeEuclideanDistance([node[0],node[1] -1],goalStateList))
                 expandArray.append(1 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check right
         if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
@@ -438,9 +434,9 @@ def A1(startStateList,goalStateList, maze,size):
                 expandArray.append(node[1]+1)
                 expandArray.append(computeEuclideanDistance([node[0],node[1] +1],goalStateList))
                 expandArray.append(1 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check up
         if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
@@ -449,9 +445,9 @@ def A1(startStateList,goalStateList, maze,size):
                 expandArray.append(node[1])
                 expandArray.append(computeEuclideanDistance([node[0] -1,node[1]],goalStateList))
                 expandArray.append(2 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check down
         if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
@@ -460,16 +456,16 @@ def A1(startStateList,goalStateList, maze,size):
                 expandArray.append(node[1])
                 expandArray.append(computeEuclideanDistance([node[0] +1,node[1]],goalStateList))
                 expandArray.append(2 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         
         for c in candidates:
             if c not in closed and c not in frontier.queue:
-                frontier.insert(c.copy())
+                frontier.insert(copy.deepcopy(c))
 
-        candidates.clear()
+        candidates = []
     print("no solution found")
     return -1
 
@@ -517,8 +513,8 @@ def A2(startStateList,goalStateList,maze,size):
 
             pathList.append(x)
             pathList.append(y)
-            path.append(pathList.copy())
-            pathList.clear()
+            path.append(copy.deepcopy(pathList))
+            pathList = []
 
             while maze[x][y] != 2:
                 # Check if path goes left
@@ -526,7 +522,7 @@ def A2(startStateList,goalStateList,maze,size):
                     if maze[x][y-1] == i-1:
                         pathList.append(x)
                         pathList.append(y-1)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 1
                         y -= 1
 
@@ -535,7 +531,7 @@ def A2(startStateList,goalStateList,maze,size):
                     if maze[x][y+1] == i-1:
                         pathList.append(x)
                         pathList.append(y+1)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 1
                         y += 1
 
@@ -544,7 +540,7 @@ def A2(startStateList,goalStateList,maze,size):
                     if maze[x-1][y] == i-1:
                         pathList.append(x-1)
                         pathList.append(y)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 2
                         x -= 1
 
@@ -553,12 +549,12 @@ def A2(startStateList,goalStateList,maze,size):
                     if maze[x+1][y] == i-1:
                         pathList.append(x+1)
                         pathList.append(y)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 2
                         x += 1
 
                 i -= 1
-                pathList.clear()
+                pathList = []
 
             path.reverse()
 
@@ -567,7 +563,7 @@ def A2(startStateList,goalStateList,maze,size):
             solution.append(closed)
 
             return solution
-        closed.append(node.copy())
+        closed.append(copy.deepcopy(node))
 
        
 
@@ -579,9 +575,9 @@ def A2(startStateList,goalStateList,maze,size):
                 expandArray.append(node[1] -1)
                 expandArray.append(h3([node[0],node[1] -1],goalStateList))
                 expandArray.append(1 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check right
         if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
@@ -590,9 +586,9 @@ def A2(startStateList,goalStateList,maze,size):
                 expandArray.append(node[1]+1)
                 expandArray.append(h3([node[0],node[1] +1],goalStateList))
                 expandArray.append(1 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check up
         if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
@@ -601,9 +597,9 @@ def A2(startStateList,goalStateList,maze,size):
                 expandArray.append(node[1])
                 expandArray.append(h3([node[0] -1,node[1]],goalStateList))
                 expandArray.append(2 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check down
         if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
@@ -612,15 +608,15 @@ def A2(startStateList,goalStateList,maze,size):
                 expandArray.append(node[1])
                 expandArray.append(h3([node[0] +1,node[1]],goalStateList))
                 expandArray.append(2 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
        
         for c in candidates:
             if c not in closed and c not in frontier.queue:
-                frontier.insert(c.copy())
+                frontier.insert(copy.deepcopy(c))
 
-        candidates.clear()
+        candidates = []
     print("no solution found")
     return -1
 
@@ -668,8 +664,8 @@ def A3(startStateList,goalStateList,maze,size):
 
             pathList.append(x)
             pathList.append(y)
-            path.append(pathList.copy())
-            pathList.clear()
+            path.append(copy.deepcopy(pathList))
+            pathList = []
 
             while maze[x][y] != 2:
                 # Check if path goes left
@@ -677,7 +673,7 @@ def A3(startStateList,goalStateList,maze,size):
                     if maze[x][y-1] == i-1:
                         pathList.append(x)
                         pathList.append(y-1)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 1
                         y -= 1
 
@@ -686,7 +682,7 @@ def A3(startStateList,goalStateList,maze,size):
                     if maze[x][y+1] == i-1:
                         pathList.append(x)
                         pathList.append(y+1)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 1
                         y += 1
 
@@ -695,7 +691,7 @@ def A3(startStateList,goalStateList,maze,size):
                     if maze[x-1][y] == i-1:
                         pathList.append(x-1)
                         pathList.append(y)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 2
                         x -= 1
 
@@ -704,12 +700,12 @@ def A3(startStateList,goalStateList,maze,size):
                     if maze[x+1][y] == i-1:
                         pathList.append(x+1)
                         pathList.append(y)
-                        path.append(pathList.copy())
+                        path.append(copy.deepcopy(pathList))
                         cost += 2
                         x += 1
 
                 i -= 1
-                pathList.clear()
+                pathList = []
 
             path.reverse()
 
@@ -718,7 +714,7 @@ def A3(startStateList,goalStateList,maze,size):
             solution.append(closed)
 
             return solution
-        closed.append(node.copy())
+        closed.append(copy.deepcopy(node))
 
        
 
@@ -730,9 +726,9 @@ def A3(startStateList,goalStateList,maze,size):
                 expandArray.append(node[1] -1)
                 expandArray.append(personalHeuristic([node[0],node[1] -1],goalStateList))
                 expandArray.append(1 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check right
         if node[0] != size and node[1]+1 != size and node[0] != -1 and node[1]+1 != -1:
@@ -741,9 +737,9 @@ def A3(startStateList,goalStateList,maze,size):
                 expandArray.append(node[1]+1)
                 expandArray.append(personalHeuristic([node[0],node[1] +1],goalStateList))
                 expandArray.append(1 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check up
         if node[0]-1 != size and node[1] != size and node[0]-1 != -1 and node[1] != -1:
@@ -752,9 +748,9 @@ def A3(startStateList,goalStateList,maze,size):
                 expandArray.append(node[1])
                 expandArray.append(personalHeuristic([node[0] -1,node[1]],goalStateList))
                 expandArray.append(2 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
 
         # Check down
         if node[0]+1 != size and node[1] != size and node[0]+1 != -1 and node[1] != -1:
@@ -763,15 +759,15 @@ def A3(startStateList,goalStateList,maze,size):
                 expandArray.append(node[1])
                 expandArray.append(personalHeuristic([node[0] +1,node[1]],goalStateList))
                 expandArray.append(2 + node[3])
-                candidates.append(expandArray.copy())
+                candidates.append(copy.deepcopy(expandArray))
                 maze[expandArray[0]][expandArray[1]] = i
-                expandArray.clear()
+                expandArray = []
        
         for c in candidates:
             if c not in closed and c not in frontier.queue:
-                frontier.insert(c.copy())
+                frontier.insert(copy.deepcopy(c))
 
-        candidates.clear()
+        candidates = []
     print("no solution found")
     return -1
 
@@ -822,6 +818,7 @@ def createMaze(size, mazeFile):
     return maze
 
 # Driver Method
+#import pyperclip
 if __name__ == "__main__":
     # Open problem.txt and save information
     problemFile = open("a1/problem.txt", "r")
@@ -847,8 +844,7 @@ if __name__ == "__main__":
 
     # Create the maze
     maze = createMaze(mazeSize, mazeFile)
-    mazeCopy = copy.copy(maze)
-
+    mazeCopy = copy.deepcopy(maze)
 
     # Run the selected algorithm
     solution = runMaze(int(algorithm), startStateList, goalStateList, maze, mazeSize)
@@ -862,31 +858,7 @@ if __name__ == "__main__":
 
         print("Path:")
         print(path)
-
-        print("Cost:")
-        print(cost)
-
-        while len(solution[2]) != 0:
-            mazeCopy[solution[2][0][0]][solution[2][0][1]] = [161, 161, 161]
-            solution[2].pop(0)
-
-        pathCopy = path
-        while len(pathCopy) != 0:
-            mazeCopy[pathCopy[0][0]][pathCopy[0][1]] = 2
-            pathCopy.pop(0)
-
-        for i in range(mazeSize):
-            for j in range(mazeSize):
-                if mazeCopy[i][j] == 1:
-                    mazeCopy[i][j] = [0, 0, 0]
-                if mazeCopy[i][j] == 0:
-                    mazeCopy[i][j] = [255, 255, 255]
-                if mazeCopy[i][j] == 2:
-                    mazeCopy[i][j] = [0, 255, 230]
-        mazeCopy[startStateList[0]][startStateList[1]] = [0, 255, 0]
-        mazeCopy[goalStateList[0]][goalStateList[1]] = [255, 0, 0]
         
-        plt.axis('off')
-        plt.imshow(mazeCopy)
-        plt.show()
-    print(datetime.now()-start)
+        print("\nCost:")
+        print(cost)
+        
